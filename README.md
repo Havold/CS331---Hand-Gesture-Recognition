@@ -15,3 +15,8 @@ This is a Computer Vision projct about Hand Gesture Recognition
 4. Run file create_dataset.py to data processing.
 5. Run file train_classifier.py to train model.
 7. Run file inference_classifier.py to test model.
+## NOTE: Remember to change the argument in the row below to correspond to your laptop's webcam. Because my laptop doesn't have a webcam, I used the IP Webcam app on my phone so I could use my phone instead of my laptop's webcam.
+```bash
+   cap = cv2.VideoCapture('http://192.168.137.153:8080/video') # My IP webcam address
+   cap = cv2.VideoCapure(0) # You can change like this if your laptop has a webcam
+```
