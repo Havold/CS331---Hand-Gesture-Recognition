@@ -2,22 +2,24 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import pickle
-
+import pyautogui
+pyautogui.FAILSAFE = False
 model_dict = pickle.load(open('./model.p','rb'))
 model = model_dict['model']
 
-cap = cv2.VideoCapture('http://192.168.137.153:8080/video')
+cap = cv2.VideoCapture('https://192.168.1.116:8080/video')
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
-hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
+hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.7,max_num_hands=1)
 # x1,y1,x2,y2 = [0,0,0,0]
-labels_dict = {0: 'Bye', 1: 'Like', 2: 'Peace'}
+labels_dict = {0: 'Move', 1: 'Left Click', 2: 'Nothing', 3: 'Scroll', 4: 'Right Click'}
 while True:
     data_aux = []
     ret, frame = cap.read()
+    frame = cv2.flip(frame,1)
     x_ = []
     y_ = []
 
@@ -35,6 +37,7 @@ while True:
                 mp_drawing_styles.get_default_hand_landmarks_style(),
                 mp_drawing_styles.get_default_hand_connections_style())
 
+
         for hand_landmarks in results.multi_hand_landmarks:
             for i in range(len(hand_landmarks.landmark)):
                 x=hand_landmarks.landmark[i].x
@@ -43,6 +46,12 @@ while True:
                 data_aux.append(y)
                 x_.append(x)
                 y_.append(y)
+                if (i==8):
+                    x_frame = int(x*W)
+                    y_frame = int(y*H)
+                    cv2.circle(img=frame, center=(x_frame,y_frame), radius=20, color=(0,255,255))
+                    pyautogui.moveTo(x_frame, y_frame)
+            
         x1 = int(min(x_) * W)
         y1 = int(min(y_) * H)
         x2 = int(max(x_) * W)

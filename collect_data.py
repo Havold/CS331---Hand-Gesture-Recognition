@@ -3,14 +3,14 @@ import time
 import os
 import mediapipe as mp
 
-cap = cv2.VideoCapture('http://192.168.137.106:8080/video')
+cap = cv2.VideoCapture('https://10.0.20.134:8080/video')
 
 DATA_DIR = './data'
 if not os.path.exists(DATA_DIR):
     os.makedirs(DATA_DIR)
 
-number_of_classes = 3
-dataset_size = 100
+number_of_classes = 5
+dataset_size = 1000
 
 
 # folderPath = 'images'
@@ -32,6 +32,7 @@ for j in range(0,number_of_classes):
         done=False
         while True:
             ret, frame = cap.read()
+            frame = cv2.flip(frame,1)
             cv2.putText(frame, 'Ready? Press "Q" ! :)', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
                 cv2.LINE_AA)
             # h,w,c = lst_2[0].shape
@@ -52,6 +53,7 @@ for j in range(0,number_of_classes):
         counter = 0
         while counter < dataset_size:
             ret, frame = cap.read()
+            frame = cv2.flip(frame,1)
             cv2.imshow('Test',frame)
             cv2.waitKey(25)
             cv2.imwrite(os.path.join(DATA_DIR, str(j), '{}.jpg'.format(counter)), frame)
